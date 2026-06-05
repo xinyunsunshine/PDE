@@ -1,0 +1,17 @@
+# @package _global_
+defaults:
+  - libero_pro_goal_pi05_her_dual_task_large_set
+  - _self_
+
+hydra:
+  run:
+    dir: .
+  output_subdir: null
+
+runner:
+  logger:
+    experiment_name: libero_pro_goal_pi05_her_dual_task_large_set_ht01
+
+algorithm:
+  her_low_threshold: 0.1
+  her_high_threshold: 1.0

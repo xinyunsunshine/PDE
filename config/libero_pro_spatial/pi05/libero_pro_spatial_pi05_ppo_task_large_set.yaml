@@ -1,0 +1,26 @@
+# @package _global_
+defaults:
+  - libero_pro_spatial_pi05_ppo_task
+  - _self_
+
+hydra:
+  run:
+    dir: .
+  output_subdir: null
+
+runner:
+  logger:
+    project_name: libero_pro_spatial_task
+    experiment_name: libero_pro_spatial_pi05_ppo_task_large_set
+
+algorithm:
+  update_epoch: 2
+
+env:
+  train:
+    total_num_envs: 64
+
+actor:
+  global_batch_size: 1024
+  optim:
+    lr: 1e-5

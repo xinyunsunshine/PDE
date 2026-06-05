@@ -1,0 +1,53 @@
+{
+  "step": 2,
+  "trajectories": [
+    {
+      "traj": 0,
+      "video": "step_00002/traj_0000.mp4",
+      "instruction": "pick up the book and place it in the back compartment of the caddy",
+      "total_reward": 0.0
+    },
+    {
+      "traj": 1,
+      "video": "step_00002/traj_0001.mp4",
+      "instruction": "pick up the book and place it in the back compartment of the caddy",
+      "total_reward": 0.0
+    },
+    {
+      "traj": 2,
+      "video": "step_00002/traj_0002.mp4",
+      "instruction": "pick up the book and place it in the back compartment of the caddy",
+      "total_reward": 5.0
+    },
+    {
+      "traj": 3,
+      "video": "step_00002/traj_0003.mp4",
+      "instruction": "pick up the book and place it in the back compartment of the caddy",
+      "total_reward": 0.0
+    },
+    {
+      "traj": 4,
+      "video": "step_00002/traj_0004.mp4",
+      "instruction": "pick up the book and place it in the back compartment of the caddy",
+      "total_reward": 0.0
+    },
+    {
+      "traj": 5,
+      "video": "step_00002/traj_0005.mp4",
+      "instruction": "pick up the book and place it in the back compartment of the caddy",
+      "total_reward": 0.0
+    },
+    {
+      "traj": 6,
+      "video": "step_00002/traj_0006.mp4",
+      "instruction": "pick up the book and place it in the back compartment of the caddy",
+      "total_reward": 0.0
+    },
+    {
+      "traj": 7,
+      "video": "step_00002/traj_0007.mp4",
+      "instruction": "pick up the book and place it in the back compartment of the caddy",
+      "total_reward": 0.0
+    }
+  ]
+}

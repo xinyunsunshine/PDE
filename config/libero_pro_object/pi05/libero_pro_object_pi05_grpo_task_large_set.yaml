@@ -1,0 +1,28 @@
+# @package _global_
+defaults:
+  - libero_pro_object_pi05_grpo_task
+  - _self_
+
+hydra:
+  run:
+    dir: .
+  output_subdir: null
+
+runner:
+  logger:
+    project_name: libero_pro_object_task
+    experiment_name: libero_pro_object_pi05_grpo_task_large_set
+
+algorithm:
+  group_size: 8
+  kl_beta: 0.0
+  update_epoch: 2
+
+env:
+  train:
+    total_num_envs: 64
+
+actor:
+  global_batch_size: 1024
+  optim:
+    lr: 1e-5

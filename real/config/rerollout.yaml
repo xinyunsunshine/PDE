@@ -1,0 +1,72 @@
+defaults:
+  - osc
+  - task: tabletop
+  - _self_
+
+# AgileX gripper over CAN — same as deploy.yaml.
+gripper:
+  CAN: can_gripper
+  torque: 2  # Nm
+
+# ------------------------------------------------------------------
+# VLA inference is served by a separate process (real/vla_server.py).
+# Start the noise-enabled server before launching this script and pass
+# the same noise_level on the CLI below.
+# ------------------------------------------------------------------
+inference:
+  server:
+    host: "localhost"
+    port: 8000
+
+  # Number of chunk positions to execute before re-inferring. We take the
+  # leading execute_k of each chunk (no valid_start trim — same as
+  # real_rl.py's chunk semantics).
+  execute_k: 16
+
+  # Action clip — mirrors deploy.yaml. Default off; set xyz_norm_m to a
+  # float (e.g. 0.045) for a hardware-safety floor.
+  action_clip:
+    xyz_norm_m: null
+    rot6d_per_dim: null
+    grip: null
+
+# ------------------------------------------------------------------
+# Re-rollout settings.
+# ------------------------------------------------------------------
+rerollout:
+  # REQUIRED: the noise_level the VLA server is configured with. Recorded
+  # into every uncut.json sidecar so the data is self-documenting. Must
+  # match real/config/vla_server.yaml's openpi_rl.noise_level. Pass on CLI:
+  #   python -m real.rerollout rerollout.noise_level=0.10
+  noise_level: ???
+
+  # Where rerollout artifacts land. Kept separate from ~/real_prompt_opt
+  # so the original (no-noise) recordings are not modified.
+  run_root: ~/real_rerollout
+  prompt_opt_base: ~/real_prompt_opt
+
+  # null = sweep all tasks under prompt_opt_base. List restricts: e.g.
+  # rerollout.task_ids=[1,2,5]
+  task_ids: null
+
+  # Trials per prompt under noise. 10 = 2× the prompt-opt baseline of 5,
+  # for a tighter SR estimate. CLI override: rerollout.trials_per_prompt=N.
+  trials_per_prompt: 10
+
+  # Inclusion threshold against the baseline's success count: a prompt is
+  # selected for rerollout iff its no-noise baseline produced at least this
+  # many successes. Default 1 = "SR > 0".
+  min_successes: 1
+
+# Per-trial control-step budget (same as deploy.py).
+max_steps: 1000
+
+# Recording (same shape as deploy.yaml).
+recording:
+  # If null, output_dir is set per-prompt to
+  # rerollout.run_root/task<X>/round<Y>/prompt<Z>/.
+  output_dir: null
+  video:
+    enabled: true
+    fps: 60
+    cameras: ["global", "wrist"]

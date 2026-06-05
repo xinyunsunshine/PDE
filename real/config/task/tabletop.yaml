@@ -1,0 +1,22 @@
+# Tabletop workspace task config for FR3 + AgileX teleop and deploy.
+#
+# `perception` is consumed by MultiRSDevice (real/perception/rs_device.py).
+# The key(s) under perception are the camera names. FR3RealEnv reads the
+# primary RGB stream from the key matching cfg.collect.camera_name (default:
+# "global"), so that entry must exist here.
+#
+# Override the serial on the CLI if your rig uses a different camera, e.g.:
+#   python -m real.collect_sft_data ... task.perception.global.serial=<sn>
+perception:
+  global: 
+    serial: "242622071805"
+    resolution: [640, 480]
+    target_size: [320, 240]
+    frame_rate: 60
+    depth: false
+  wrist:
+    serial: "230322274968"
+    resolution: [640, 480]
+    target_size: [320, 240]
+    frame_rate: 60
+    depth: false

@@ -1,0 +1,52 @@
+defaults:
+  - _self_
+
+inference:
+  # Explicit checkpoint path. Set null/empty to auto-resolve from
+  # `inference.run_root` (see below).
+  weights: null
+
+  # Auto-resolution: when `weights` is null, the server reads the trainer-side
+  # path convention. For iteration K it loads
+  #   <run_root>/iteration{K-1:03d}/train_after_itr{K-1}_model.pt
+  # which is what RealworldEmbodiedRunner scp's after PPO on iter K-1.
+  # For K=0 there is no prior PPO ckpt; falls back to `sft_weights`.
+  run_root: null
+  sft_weights: null
+
+  # Absolute path to the norm_stats.json file produced by
+  # external/openpi/scripts/compute_norm_stats.py.
+  norm_stats: ???
+
+
+  # (pi0.5 base, action_horizon=50, 10-dim absolute EE + gripper).
+  config_name: "pi05_fr3vla_pde_2cam"
+
+  device: "cuda:0"
+
+  default_prompt: "put the pear in the bowl"
+
+
+  warmup_steps: 5
+
+  # Sampling mode for OpenPi0ForRLActionPrediction.predict_action_batch.
+  #   "train": SDE noise injected at one randomly-chosen denoise step
+  #   "eval":  fully deterministic flow ODE sampling (no noise)
+  sample_mode: "train"
+
+
+  # Tune noise_level / joint_logprob for exploration/ task.
+  openpi_rl:
+    # Match FR3 action layout: full 50-position chunk, 10-dim action.
+    action_chunk: 50
+    action_env_dim: 10
+
+    noise_method: "flow_sde"
+    noise_level: 0.20
+
+    joint_logprob: false
+
+
+server:
+  host: "0.0.0.0"
+  port: 8000

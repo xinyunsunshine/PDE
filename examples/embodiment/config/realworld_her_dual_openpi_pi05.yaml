@@ -1,0 +1,80 @@
+# @package _global_
+# bifranka real-world HER-dual on pi0.5 (OpenPI).
+#
+# Inherits the realworld GRPO base (group_size=4, adv_type=grpo, low-var KL
+# anchor at 1e-3, asymmetric clipping at 0.2, target_kl=0.05 — all validated
+# stable at lr=2e-6) and turns on HER dual: every outer iter clones the
+# preprocessed batch, relabels instructions and rewards on the clone via the
+# thinking VLM, and trains on both branches with the HER loss reweighted by
+# her_loss_weight.
+#
+# Prerequisites on bifranka recordings:
+#   - HDF5 trajectories must include per-step RGB frames so the HER processor
+#     can sample them for VLM scoring (her_video_mode=frames).
+#   - The operator's prompt JSON must allocate prompts in a stride-8 pattern
+#     across the 32 envs so each rank's 4 episodes share a prompt (see the
+#     GRPO base config for the stride-8 explanation).
+#
+# Dispatch: train_realworld_agent.py picks RealworldFSDPActorHERDual when
+# runner.runner_class==realworld AND actor.her_dual is set. That class
+# composes RealworldFSDPActor (prev_logprob recompute, loss_mask synthesis
+# under ignore_terminations=True) with EmbodiedFSDPActorHERDual (paired
+# orig+HER mini-batches).
+
+defaults:
+  - /realworld_grpo_openpi_pi05@_global_
+  - _self_
+
+hydra:
+  run:
+    dir: .
+  output_subdir: null
+
+runner:
+  bifranka_dest: "user@robot.example.com:/home/user/real_rl_runs/her/meta_green_bowl_her_dual"
+  logger:
+    log_path: /PROJECT_ROOT/archive/checkpoints/logs/her_meta_green_bowl_her_dual
+    experiment_name: "her_meta_green_bowl_her_dual"
+
+rollout:
+  realworld:
+    rollout_dir: /PROJECT_ROOT/repo/realworld_rollouts/her_meta_green_bowl_her_dual
+    remote_dest: "user@robot.example.com:/home/user/real_rl_runs/her/meta_green_bowl_her_dual"
+
+algorithm:
+  # Canonical HER-dual unified hyperparameters (CLAUDE.md):
+  #   kl_coef=1e-3, update_epochs=2, her_loss_weight=0.1,
+  #   her_num_samples=1, her_temperature=0.8, her_threshold=0.8–1.0.
+  # filter_rewards stays False (small group_size=4 makes aggressive filtering
+  # too data-hungry on real-world rates; matches her_dual_task on libero).
+  update_epoch: 2
+  her_loss_weight: 0.1
+  her_dual_force_all_groups: false
+  her_anchor_from_success: false
+
+  # HER processor (HERProcessor) config — relabels instructions + rewards
+  # on the cloned batch only. modification_type=her_dual selects HERProcessor
+  # (default branch in EmbodiedFSDPActorHER.__init__).
+  modification_type: her_dual
+  modification_batch_mode: inplace
+  her_selection: threshold
+  her_low_threshold: 0.8
+  her_high_threshold: 1.0
+  her_anchor_reward_one: true
+
+  # Thinking VLM backend (CLAUDE.md: always use the thinking model for HER).
+  her_endpoint: http://VLM_ENDPOINT_HOST:PORT/v1
+  her_model: Qwen/Qwen3-VL-235B-A22B-Thinking-FP8
+  her_video_mode: frames
+  her_prompt_version: v7
+  her_reward_eval_prompt_version: 6
+  her_prompt_debug_log_n: 2
+
+  her_num_samples: 1
+  her_temperature: 0.8
+  her_reward_eval_num_samples: 1
+  her_reward_eval_vote_temperature: 0.6
+
+actor:
+  # Selects EmbodiedFSDPActorHERDual via the train_realworld_agent.py dispatcher.
+  her_dual: {}

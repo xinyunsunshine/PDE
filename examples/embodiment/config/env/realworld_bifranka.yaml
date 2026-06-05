@@ -1,0 +1,31 @@
+# Stub env config for the bifranka real-world pipeline.
+#
+# The trainer never instantiates a real env (data comes from bifranka HDF5
+# via rsync). train_realworld_agent.py replaces the env worker group with
+# _NoOpEnv, so this YAML only needs to satisfy validate_embodied_cfg's
+# structural and divisibility asserts.
+
+env_type: realworld
+
+# 32 episodes per iteration from bifranka. With actor_world_size=8 and
+# pipeline_stage_num=1: 32 % 8 == 0, and 32 // 8 // 1 % group_size(=1) == 0.
+total_num_envs: 32
+
+auto_reset: False
+# REQUIRED: prevents the actor from overwriting loss_mask on episodes that
+# terminate before max_episode_steps. See README "Numerical gotchas".
+ignore_terminations: True
+
+reward_mode: raw
+wrap_obs_mode: simple
+seed: 0
+group_size: ${algorithm.group_size}
+use_fixed_reset_state_ids: False
+
+# In robot-steps. 512 % num_action_chunks(=16) == 0 (validator requirement).
+# Equates to 32 chunk-steps per episode — matches rollout.realworld.max_episode_steps.
+max_episode_steps: 512
+max_steps_per_rollout_epoch: 512
+
+init_params: {}
+override_cfg: {}

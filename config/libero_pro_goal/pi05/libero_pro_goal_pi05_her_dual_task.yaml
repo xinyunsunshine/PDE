@@ -1,0 +1,24 @@
+# @package _global_
+defaults:
+  - libero_pro_goal_pi05_her_task
+  - _self_
+
+hydra:
+  run:
+    dir: .
+  output_subdir: null
+
+runner:
+  logger:
+    experiment_name: libero_pro_goal_pi05_her_dual_task
+
+algorithm:
+  update_epoch: 2
+  her_loss_weight: 0.005
+  her_loss_clip: 0.30
+  her_skip_same_instruction: true
+  her_anchor_from_success: false
+  her_dual_force_all_groups: false
+
+actor:
+  her_dual: {}

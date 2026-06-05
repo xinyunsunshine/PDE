@@ -1,0 +1,29 @@
+# @package _global_
+defaults:
+  - libero_pro_10_pi05_her_dual_task_large_set
+  - _self_
+
+hydra:
+  run:
+    dir: .
+  output_subdir: null
+
+runner:
+  logger:
+    project_name: libero_pro_10_task
+    experiment_name: libero_pro_10_pi05_her_dual_task_huge
+  max_epochs: 100
+  save_interval: 10
+
+algorithm:
+  rollout_epoch: 8
+  update_epoch: 4
+  her_loss_weight: 0.006
+  her_loss_clip: 0.25
+  her_skip_same_instruction: true
+
+actor:
+  micro_batch_size: 128
+  global_batch_size: 2048
+  optim:
+    lr: 5e-6

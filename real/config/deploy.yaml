@@ -1,0 +1,65 @@
+defaults:
+  - osc
+  - task: tabletop
+  - _self_
+
+# AgileX gripper over CAN — top level because AgileXGripper reads
+# cfg.gripper.{CAN, torque}.
+gripper:
+  CAN: can_gripper
+  torque: 2  # Nm
+
+# ------------------------------------------------------------------
+# VLA inference is served by a separate process — see real/vla_server.py
+# and real/config/vla_server.yaml. Start that server first, then connect
+# from here.
+# ------------------------------------------------------------------
+inference:
+  # Where to reach the VLA inference server.
+  server:
+    host: "localhost"
+    port: 8000
+
+  # Action chunking. Each client.infer() returns a chunk of up to
+  # action_horizon actions (50 for pi05_fr3vla); we execute this many of
+  # them before re-inferring on fresh obs. Smaller → more re-planning
+  # (fresher obs) at the cost of more inference calls; larger → fewer
+  # forward passes but staler closed-loop control.
+  execute_k: 16
+
+  action_clip:
+    xyz_norm_m: 0.045
+    rot6d_per_dim: null
+    grip: null
+
+# Prompt-optimization pipeline coordinates. Recordings land under
+# ${PROMPTOPT_BASE_DIR}/task<task_id>/round<round_num>/prompt<prompt_idx>/
+# task.prompt is auto-resolved from that round's prompts.json[prompt_idx]; pass
+# task.prompt=... on the CLI to override (or for ad-hoc runs without a task dir).
+task_id: null
+round_num: null
+prompt_idx: null
+
+# Task prompt injected into the policy as the language instruction.
+# Auto-resolved from prompts.json when (task_id, round_num, prompt_idx) are set;
+# override on the CLI: task.prompt="..."
+task:
+  prompt: null
+
+# Number of deployment trials to run before exiting. Used as expected_trials
+# in the recorded uncut.json so downstream MCP tools can detect completion.
+trials: 50
+
+# Per-trial step budget. Each env.step advances one control tick at
+# cfg.robot.freq (50 Hz by default), so max_steps=300 ≈ 6s of closed
+# loop execution per trial.
+max_steps: 1000
+
+recording:
+  # When task_id/round_num/prompt_idx are set, output_dir is auto-derived from
+  # round_task.prompt_dir(...). Set explicitly to opt out of the convention.
+  output_dir: null
+  video:
+    enabled: true
+    fps: 60
+    cameras: ["global", "wrist"]  # e.g. ["visualization_0"]

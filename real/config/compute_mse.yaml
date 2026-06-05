@@ -1,0 +1,12 @@
+defaults:
+  - deploy
+  - _self_
+
+# LeRobot dataset to evaluate against. Matches the layout produced by
+# ``real/collect_sft_data.py``: ``<root>/<repo_id>/meta/info.json``.
+dataset:
+  root: ???
+  repo_id: ???
+
+# Optional cap on episodes (debugging / smoke tests). Defaults to all.
+max_episodes: null
