@@ -1,3 +1,36 @@
+# Prompt-Driven Exploration
+
+This repository is the code release for **Prompt-Driven Exploration: Language
+as an Exploration Space for VLA Reinforcement Learning**. PDE searches for
+prompts that elicit useful global behavior from a frozen vision-language-action
+policy, then uses the resulting prompt pool to bootstrap reinforcement learning
+while evaluating under the original task instruction.
+
+The release has two public interfaces:
+
+1. `pde.discovery` defines the fixed-policy VLM prompt-search loop and the
+   versioned prompt-pool artifact passed between stages.
+2. `pde.training` defines prompt-mixture scheduling and the mixed-log-probability
+   calculation used to anchor PPO updates to the canonical prompt.
+
+Start with [the PDE release guide](docs/PDE_RELEASE.md) and the
+[code/dependency map](docs/CODE_MAP.md). The full VLA training stack below is
+based on RLinf; upstream documentation remains available for installation,
+model, environment, and cluster details.
+
+```bash
+python -m pip install -e ".[embodied]"
+python -m pde.cli validate-pool \
+  examples/pde/prompt_pools/close_microwave.example.json
+pytest -q tests/unit_tests/test_pde_release.py
+```
+
+> Release status: the framework-independent PDE interfaces and RLinf integration
+> are included. Checkpoint download locations and the full paper prompt pools
+> must be filled in before the first public tag; see [RELEASE.md](RELEASE.md).
+
+## RLinf foundation
+
 <div align="center">
   <img src="https://github.com/RLinf/misc/raw/main/pic/logo_white.svg" alt="RLinf-logo" width="600"/>
 </div>

@@ -1,0 +1,22 @@
+{
+  "task_id": "libero_90.close_the_microwave",
+  "canonical_prompt": "close the microwave",
+  "policy_checkpoint": "REPLACE_WITH_CHECKPOINT_ID",
+  "environment": "LIBERO-90",
+  "admission_threshold": 0.0,
+  "candidates": [
+    {
+      "prompt": "push the microwave door until it shuts",
+      "successes": 3,
+      "rollouts": 10,
+      "summary": "The arm contacts the door and pushes it toward the closed pose.",
+      "iteration": 0,
+      "success_rate": 0.3
+    }
+  ],
+  "schema_version": 1,
+  "metadata": {
+    "artifact_kind": "format_example",
+    "paper_case_study": true
+  }
+}

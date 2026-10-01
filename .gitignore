@@ -28,3 +28,6 @@ tmp/*
 PKG-INFO
 *.egg-info/
 /models
+*.pdf
+*.png
+prompt_pools.local/
