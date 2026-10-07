@@ -21,7 +21,7 @@ authors:
     given-names: Pulkit
   - family-names: Hong
     given-names: Zhang-Wei
-repository-code: "https://github.com/REPLACE_WITH_OWNER/prompt-driven-exploration"
+repository-code: "https://github.com/xinyunsunshine/PDE"
 url: "https://xinyunsunshine.github.io/prompt-rl"
 license: Apache-2.0
 version: 0.1.0

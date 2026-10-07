@@ -26,7 +26,7 @@ Published separately with stable URLs:
 
 ## Required before v0.1.0
 
-- [ ] Replace the repository-owner placeholder in project metadata.
+- [x] Set public repository metadata to `xinyunsunshine/PDE`.
 - [ ] Add the exact checkpoint URL, revision, license, and SHA-256.
 - [ ] Add the paper prompt pools and their generation metadata.
 - [ ] Record the LIBERO-PRO commit/release and released task IDs.

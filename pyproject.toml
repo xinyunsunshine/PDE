@@ -68,9 +68,9 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://xinyunsunshine.github.io/prompt-rl"
-Repository = "https://github.com/REPLACE_WITH_OWNER/prompt-driven-exploration"
+Repository = "https://github.com/xinyunsunshine/PDE"
 Documentation = "https://rlinf.readthedocs.io/"
-"Bug Report" = "https://github.com/REPLACE_WITH_OWNER/prompt-driven-exploration/issues"
+"Bug Report" = "https://github.com/xinyunsunshine/PDE/issues"
 
 [project.scripts]
 pde = "pde.cli:main"
