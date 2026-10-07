@@ -1,44 +1,24 @@
 # Public release checklist
 
-## Release manifest
+Included in this repository:
 
-Included in the initial release:
+- the framework-independent prompt discovery and prompt-pool API;
+- PDE subclasses of the pinned RLinf runtime;
+- one schema-valid example prompt pool;
+- CPU contract and repository-structure tests;
+- focused installation, architecture, citation, and license metadata.
 
-- `pde/`: stable discovery, artifact, sampling, and mixed-backprop interfaces;
-- `rlinf/`: the VLA PPO stack and the historical PDE/HER integration;
-- `config/libero_pro_*/pi05/`: pi0.5 LIBERO-PRO PDE and PPO configurations;
-- `examples/pde/`: artifact examples and the microwave walkthrough inputs;
-- `tests/unit_tests/test_pde_release.py`: CPU-only contract tests;
-- license, citation, contribution guide, and upstream attribution.
+The RLinf framework is an unmodified Git submodule pinned to commit
+`fce5435df9472e2c61957e4f849fb903fc70827c`.
 
-Excluded from the repository:
+Required before the first result-bearing release:
 
-- checkpoints, datasets, virtual environments, caches, logs, scheduler output,
-  rollout dumps, raw robot recordings, and W&B state;
-- unpublished benchmark assets or files whose redistribution terms are unclear;
-- credentials, private endpoints, usernames, and cluster-specific launch files.
-
-Published separately with stable URLs:
-
-- weak pi0.5 SFT checkpoint and checksum;
-- paper prompt pools for the released task split;
-- task manifest, benchmark revision, and aggregate result files.
-
-## Required before v0.1.0
-
-- [x] Set public repository metadata to `xinyunsunshine/PDE`.
-- [ ] Add the exact checkpoint URL, revision, license, and SHA-256.
-- [ ] Add the paper prompt pools and their generation metadata.
-- [ ] Record the LIBERO-PRO commit/release and released task IDs.
+- [ ] Publish the exact checkpoint URL, revision, license, and SHA-256.
+- [ ] Publish the paper prompt pools and generation metadata.
+- [ ] Record the LIBERO-PRO revision and released task IDs.
 - [ ] Add one public-machine smoke-run transcript.
-- [ ] Confirm redistribution rights for all retained assets and benchmark files.
-- [ ] Run `python scripts/release_audit.py .` and the unit test suite. The audit
-  intentionally fails while the repository-owner placeholder remains.
-- [ ] Create the public GitHub repository, push `main`, and tag `v0.1.0`.
+- [ ] Run `pytest -q`, `ruff check pde tests`, and the release audit.
+- [ ] Tag the tested commit.
 
-## Known boundary
-
-The original research tree contains many exploratory configs and analyses. This
-release snapshot keeps the upstream RLinf substrate but documents pi0.5 +
-LIBERO-PRO as the supported PDE path. Additional models and environments should
-be promoted only after their configs, artifacts, and smoke tests are complete.
+Checkpoints, datasets, logs, rollout videos, credentials, private endpoints,
+cluster launch files, and externally licensed benchmark assets are excluded.
