@@ -124,19 +124,6 @@ ratio = exp(logp - old_logp_under_sampled_prompt)
 Both current-policy terms receive gradients. Rewards and the stored old
 likelihood remain those of the original rollout.
 
-## Reproducibility status
-
-The current pi0.5/LIBERO implementation follows the attached paper's two-stage
-method and has CPU regression tests against the pinned RLinf. It replaces the
-earlier HER-based release, which did not implement that method correctly.
-A full GPU/simulator training run has **not** been validated.
-
-Reproducing the reported scores also requires the exact weak SFT checkpoint,
-paper prompt pools, benchmark revision/task splits, and resolved run configs.
-Those artifacts are not in this repository yet. The supplied configs encode
-the paper's shared PPO settings, not verified figure-specific experiment configs.
-See [reproduction details](docs/REPRODUCTION.md) and the [code map](docs/CODE_MAP.md).
-
 ## Tests
 
 ```bash
