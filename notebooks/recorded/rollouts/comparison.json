@@ -1,0 +1,32 @@
+{
+  "checkpoint": "RLinf/RLinf-Pi05-LIBERO-SFT",
+  "task_index": 33,
+  "trial": 0,
+  "rlinf_revision": "fce5435df9472e2c61957e4f849fb903fc70827c",
+  "results": [
+    {
+      "prompt": "close the microwave",
+      "canonical_prompt": "close the microwave",
+      "success": false,
+      "seed": 0,
+      "steps": 240,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "video": "reference.mp4",
+      "frames": "reference.npz"
+    },
+    {
+      "prompt": "push the microwave door until it shuts",
+      "canonical_prompt": "close the microwave",
+      "success": false,
+      "seed": 0,
+      "steps": 240,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "video": "custom.mp4",
+      "frames": "custom.npz"
+    }
+  ],
+  "checkpoint_source": {
+    "repo_id": "RLinf/RLinf-Pi05-LIBERO-SFT",
+    "revision": "45ccfcc4e28634f1576ebf78cab0fbe2fd82432d"
+  }
+}

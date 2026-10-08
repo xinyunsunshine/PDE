@@ -12,7 +12,7 @@ import torch
 from pde.demo import find_microwave_task, run_episode
 
 
-def test_notebook_cells_compile_and_do_not_contain_saved_outputs():
+def test_notebook_cells_compile_and_preserve_recorded_outputs():
     notebook = json.loads(
         (
             Path(__file__).parents[1] / "notebooks/microwave_prompt_demo.ipynb"
@@ -20,9 +20,14 @@ def test_notebook_cells_compile_and_do_not_contain_saved_outputs():
     )
     for cell in notebook["cells"]:
         if cell["cell_type"] == "code":
-            ast.parse(cell["source"])
-            assert cell["outputs"] == []
-            assert cell["execution_count"] is None
+            ast.parse("".join(cell["source"]))
+            if "recorded-output" in cell["metadata"].get("tags", []):
+                assert cell["outputs"]
+                assert cell["execution_count"] is not None
+                assert all(o["output_type"] != "error" for o in cell["outputs"])
+            else:
+                assert cell["outputs"] == []
+                assert cell["execution_count"] is None
 
 
 def test_microwave_lookup_uses_language_not_hardcoded_index():

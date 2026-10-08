@@ -1,0 +1,11 @@
+{
+  "provider": "local_qwen",
+  "model": "Qwen/Qwen3-VL-2B-Instruct",
+  "summary": "The robot attempted to close the microwave by placing a mug inside it, but failed to do so as it was not properly aligned and the microwave door did not close correctly.",
+  "new_prompts": [
+    "close the microwave door properly",
+    "ensure the microwave door is fully closed",
+    "close the microwave without a mug inside"
+  ],
+  "simulator_success": false
+}

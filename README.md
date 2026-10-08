@@ -13,6 +13,25 @@ execution, policy loading, simulation, PPO and optimization.
 
 ## Interactive microwave demo
 
+Open the [Jupyter notebook with saved rollout videos and VLM output](notebooks/microwave_prompt_demo.ipynb).
+From your PDE checkout, launch it with:
+
+```bash
+python -m pip install jupyterlab
+jupyter lab notebooks/microwave_prompt_demo.ipynb
+```
+
+The saved results can be viewed without a GPU. New rollouts require Linux,
+a native-BF16 NVIDIA GPU, 32 GB host RAM recommended, and 40 GB free disk.
+On Ubuntu/Debian, install system libraries before running the setup cell:
+
+```bash
+sudo apt-get install libegl1 libgl1 libgles2 libglfw3 libosmesa6 ffmpeg git
+```
+
+Set the notebook's `workspace_directory` for downloads and outputs. The setup
+creates a separate Python 3.11 environment and leaves your Jupyter kernel intact.
+
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/xinyunsunshine/PDE/blob/main/notebooks/microwave_prompt_demo.ipynb)
 
 Change the VLA's instruction, compare two microwave rollouts from the same
