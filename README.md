@@ -152,12 +152,11 @@ objective and config tests run on CPU; no model download or VLM call is needed.
 ## Citation
 
 ```bibtex
-@inproceedings{jiang2026promptdriven,
-  title = {Prompt-Driven Exploration: Language as an Exploration Space for VLA Reinforcement Learning},
-  author = {Jiang, Sunshine and Marangola, John and Zhang, David and Kowdeed, Raghuram and Luo, Ruiyang and Dashora, Nitish and Li, Richard and Agrawal, Pulkit and Hong, Zhang-Wei},
-  booktitle = {Advances in Neural Information Processing Systems},
-  year = {2026},
-  url = {https://xinyunsunshine.github.io/prompt-rl}
+@article{jiang2026promptdriven,
+  title={Prompt-Driven Exploration: Language as an Exploration Space for VLA Reinforcement Learning},
+  author={Jiang, Sunshine and Marangola, John and Zhang, David and Kowdeed, Raghuram and Luo, Ruiyang and Dashora, Nitish and Li, Richard and Agrawal, Pulkit and Hong, Zhang-Wei},
+  journal={NeurIPS},
+  year={2026}
 }
 ```
 
