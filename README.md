@@ -1,95 +1,103 @@
 # Prompt-Driven Exploration
 
-Official code release for **Prompt-Driven Exploration: Language as an
-Exploration Space for VLA Reinforcement Learning**.
+Code for **Prompt-Driven Exploration: Language as an Exploration Space for VLA
+Reinforcement Learning**.
 
-PDE uses language to expose behaviors already present in a vision-language-
-action policy. The release has two parts:
+PDE discovers prompts that elicit useful behavior from a frozen VLA, then trains
+with a fixed prompt pool while transferring that behavior to the original task
+instruction. Evaluation always uses the original instruction.
 
-1. `pde.discovery` searches for useful instructions with a frozen policy and a
-   VLM supervisor, then writes a versioned prompt-pool JSON artifact.
-2. `pde.rlinf` trains with relabeled prompts while anchoring updates to the
-   original instruction. Every framework extension subclasses an RLinf type.
+The method lives in `pde/`: `PDEActor` is our PPO actor, inheriting RLinf's
+`EmbodiedFSDPActor`. The unmodified `RLinf/` submodule supplies distributed
+execution, policy loading, simulation, PPO and optimization.
 
-RLinf is pinned as the `RLinf/` Git submodule. No RLinf source is copied into
-this repository.
+## Install
 
-## Installation
-
-Clone with submodules and use Python 3.10 or 3.11:
+Use Python 3.10 or 3.11 and clone the pinned dependency:
 
 ```bash
 git clone --recurse-submodules https://github.com/xinyunsunshine/PDE.git
 cd PDE
+```
+
+Set up the pi0.5/LIBERO environment using
+[RLinf's pinned installation instructions](RLinf/docs/source-en/rst_source/examples/embodied/pi0.rst).
+Then, in that environment:
+
+```bash
 python -m pip install -e RLinf
 python -m pip install -e ".[integration]"
 ```
 
-If the repository was cloned without submodules, run
-`git submodule update --init --recursive`.
+An existing clone needs `git submodule update --init --recursive`. Launch from
+the repository root. Both actor and rollout workers must see the same checkpoint
+and pool directory.
 
-Follow the [RLinf installation guide](https://rlinf.readthedocs.io/) for the
-model, simulator, CUDA, and distributed-runtime dependencies used by your
-experiment.
+## 1. Discover prompts with a VLM
 
-## Prompt discovery
-
-```python
-from pde import DiscoveryConfig, PromptPool, discover_prompt_pool
-
-pool = PromptPool(
-    task_id="libero.close_the_microwave",
-    canonical_prompt="close the microwave",
-    policy_checkpoint="org/pi05-weak-sft",
-    environment="LIBERO",
-)
-pool = discover_prompt_pool(
-    pool,
-    evaluator=rollout_evaluator,
-    supervisor=vlm_supervisor,
-    config=DiscoveryConfig(),
-)
-pool.save("prompt_pool.json")
-```
-
-The evaluator and supervisor are explicit callables so users can choose the VLA
-runtime and OpenAI-compatible VLM endpoint without storing credentials in an
-artifact. Validate a pool with:
+Run discovery once per task, with fixed policy weights. For example, for task 0
+of the configured LIBERO-object suite:
 
 ```bash
-pde validate-pool pde/examples/close_microwave.example.json
+export OPENAI_API_KEY=...
+export OPENAI_BASE_URL=https://YOUR_VLM_ENDPOINT/v1
+python -m pde.search \
+  actor.model.model_path=/path/to/weak-pi05 \
+  search.task_index=0 search.task_id=libero_object.task_0 \
+  search.output=prompt_pools/task_0.json
 ```
 
-## RLinf integration
+The command evaluates the canonical instruction, then performs up to ten rounds
+of five proposals with ten rollouts per candidate. The VLM summarizes videos;
+both successful and failed prompts enter its feedback history. Only prompts
+with nonzero task success enter the admitted pool. Set `env.train.libero_variant=pro`
+and `+env.train.perturbation_suffix=task` for LIBERO-PRO discovery.
 
-| PDE class | RLinf base |
-|---|---|
-| `PDEActor` | `EmbodiedFSDPActor` |
-| `PDEDualActor` | `PDEActor` |
-| `PDEEnvWorker` | `EnvWorker` |
-| `PDELiberoEnv` | `LiberoEnv` |
-| `PDEOpenPiActionModel` | `OpenPi0ForRLActionPrediction` |
-| `PDETrajectory` | `Trajectory` |
-| `PDERolloutResult` | `EmbodiedRolloutResult` |
-| `PDERunner` | `EmbodiedRunner` |
+The example JSON in `pde/examples/` illustrates the schema; it is not a measured
+paper prompt pool.
 
-The entry point starts from RLinf's pi0.5 LIBERO configuration and swaps in
-these subclasses:
+## 2. Train with frozen prompt pools
+
+Once the pool directory covers every selected task:
 
 ```bash
-python -m pde.rlinf.train \
-  +algorithm.pde_dual=true \
-  +algorithm.her_endpoint=http://VLM_HOST:PORT/v1 \
-  +algorithm.her_model=Qwen/Qwen3-VL-235B-A22B-Thinking-FP8 \
-  +algorithm.her_video_mode=frames \
-  +algorithm.her_prompt_version=v7
+python -m pde.train --config-name libero_pro \
+  actor.model.model_path=/path/to/weak-pi05 \
+  pde.pool_dir=prompt_pools
 ```
 
-Use Hydra overrides from the pinned RLinf configuration for checkpoints,
-placement, environment counts, logging, and training budgets. See the
-[release guide](docs/PDE_RELEASE.md) and [code map](docs/CODE_MAP.md).
+For a single task, add `env.train.filter_task_ids=[0]` and
+`env.eval.total_num_envs=250`. Use `--config-name libero` for standard LIBERO.
+Run the matched PPO baseline with the same overrides plus `pde.enabled=false`.
+Training makes no VLM calls.
 
-## Development checks
+A prompt stays fixed for each rollout episode. Canonical-prompt successes update
+an EMA with smoothing 0.3; its value controls the canonical sampling probability
+with a floor of 0.05 and consolidation target of 0.5. Each PPO update uses
+
+```text
+logp = 0.5 * log pi(action | observation, sampled_prompt)
+     + 0.5 * log pi(action | observation, canonical_prompt)
+ratio = exp(logp - old_logp_under_sampled_prompt)
+```
+
+Both current-policy terms receive gradients. Rewards and the stored old
+likelihood remain those of the original rollout.
+
+## Reproducibility status
+
+The current pi0.5/LIBERO implementation follows the attached paper's two-stage
+method and has CPU regression tests against the pinned RLinf. It replaces the
+earlier HER-based release, which did not implement that method correctly.
+A full GPU/simulator training run has **not** been validated.
+
+Reproducing the reported scores also requires the exact weak SFT checkpoint,
+paper prompt pools, benchmark revision/task splits, and resolved run configs.
+Those artifacts are not in this repository yet. The supplied configs encode
+the paper's shared PPO settings, not verified figure-specific experiment configs.
+See [reproduction details](docs/REPRODUCTION.md) and the [code map](docs/CODE_MAP.md).
+
+## Tests
 
 ```bash
 python -m pip install -e ".[test]"
@@ -98,6 +106,19 @@ ruff check pde tests
 python scripts/release_audit.py .
 ```
 
-Citation metadata is in [`CITATION.cff`](CITATION.cff). PDE and the pinned
-RLinf dependency use Apache-2.0; external models and benchmarks retain their
-own licenses.
+Runtime tests use the installed RLinf training dependencies. Core artifact,
+objective and config tests run on CPU; no model download or VLM call is needed.
+
+## Citation
+
+```bibtex
+@misc{jiang2026promptdriven,
+  title = {Prompt-Driven Exploration: Language as an Exploration Space for VLA Reinforcement Learning},
+  author = {Jiang, Sunshine and Marangola, John and Zhang, David and Kowdeed, Raghuram and Luo, Ruiyang and Dashora, Nitish and Li, Richard and Agrawal, Pulkit and Hong, Zhang-Wei},
+  year = {2026},
+  url = {https://xinyunsunshine.github.io/prompt-rl}
+}
+```
+
+Also available as [CITATION.bib](CITATION.bib). PDE and RLinf use Apache-2.0;
+models and benchmarks retain their own licenses.

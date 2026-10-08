@@ -13,10 +13,11 @@ PRIVATE_PATTERNS = {
     "private key": re.compile(r"-----BEGIN (?:RSA |OPENSSH )?PRIVATE KEY-----"),
     "GitHub token": re.compile(r"\bgh[ps]_[A-Za-z0-9]{30,}\b"),
     "OpenAI token": re.compile(r"\bsk-[A-Za-z0-9_-]{20,}\b"),
-    "unresolved repository owner": re.compile("REPLACE_" "WITH_OWNER"),
+    "unresolved repository owner": re.compile("_".join(("REPLACE", "WITH", "OWNER"))),
 }
 
 TEXT_SUFFIXES = {
+    ".bib",
     ".cfg",
     ".cff",
     ".ini",

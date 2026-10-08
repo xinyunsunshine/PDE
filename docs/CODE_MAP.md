@@ -1,20 +1,30 @@
 # Code map
 
-| Concern | Location |
-|---|---|
-| Prompt-pool schema and validation | `pde/prompt_pool.py` |
-| Frozen-policy prompt search | `pde/discovery.py` |
-| Prompt sampling and mixed likelihood | `pde/training.py` |
-| VLM prompts and transport | `pde/rlinf/prompting.py`, `vlm_client.py` |
-| Trajectory relabeling | `pde/rlinf/relabeler.py` |
-| Single-branch PDE actor | `pde/rlinf/actor.py` |
-| Canonical + relabeled dual actor | `pde/rlinf/dual_actor.py` |
-| Language-aware RLinf trajectory types | `pde/rlinf/data.py` |
-| LIBERO and environment-worker extensions | `pde/rlinf/env.py` |
-| OpenPI prompt retokenization | `pde/rlinf/model.py` |
-| Training entry point | `pde/rlinf/train.py` |
-| Unmodified training framework | `RLinf/` submodule |
+The PDE method is implemented directly in `pde/`. RLinf remains an unmodified
+submodule pinned to `fce5435df9472e2c61957e4f849fb903fc70827c`.
 
-The JSON prompt pool is the stable boundary between discovery and training.
-Raw videos, endpoint credentials, scheduler state, and machine-local paths are
-not part of the artifact.
+| Method component | Code | Responsibility |
+|---|---|---|
+| Prompt search | `pde/discovery.py` | Budget, history and pool admission |
+| Executable search | `pde/search.py` | Frozen RLinf policy, simulator rollouts and videos |
+| VLM supervisor | `pde/vlm.py` | Video summaries and new prompt proposals |
+| Artifacts | `pde/prompt_pool.py`, `pde/pools.py` | Schema, loading and checkpoint matching |
+| Actor | `pde/actor.py` | RLinf PPO actor subclass; canonical-success EMA and resume |
+| Model objective | `pde/model.py`, `pde/objective.py` | Two prompt-conditioned likelihoods within one PPO loss |
+| Rollout | `pde/rollout.py` | Frozen-pool sampling per episode and canonical token transport |
+| Environment | `pde/env.py`, `pde/libero.py` | RLinf subclasses for task subsets and BDDL instructions |
+| Runner | `pde/runner.py` | Synchronize globally aggregated curriculum with the policy |
+| Entrypoint/configs | `pde/train.py`, `pde/configs/` | PDE or matched PPO, configuration checks |
+| Provenance | `pde/provenance.py` | Verify RLinf pin; save resolved configs and pool hashes |
+
+Workers, model and environment classes inherit their RLinf counterparts. Artifact
+dataclasses and the VLM supervisor are PDE utilities; they have no corresponding
+RLinf class to inherit. There is no separate `pde.rlinf` integration namespace.
+
+Canonical prompt tokens travel as tensors in RLinf's existing `forward_inputs`.
+This avoids custom trajectory classes, string metadata sharding, or global
+monkey patches. RLinf retains its full advantage and optimizer implementations.
+
+The OpenPI subclass overrides the default forward method. RLinf creates and
+loads the model first; PDE promotes that individual instance to a stateless
+subclass, preserving transforms, parameters, LoRA settings and state-dict names.

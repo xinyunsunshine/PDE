@@ -1,0 +1,16 @@
+defaults:
+  - libero
+  - _self_
+
+search:
+  task_index: ???
+  task_id: ???
+  output: ???
+  vlm_model: Qwen/Qwen3-VL-235B-A22B-Thinking-FP8
+  base_url: ${oc.env:OPENAI_BASE_URL,null}
+  frames_per_video: 8
+  budget:
+    iterations: 10
+    candidates_per_iteration: 5
+    rollouts_per_candidate: 10
+    admission_threshold: 0.0

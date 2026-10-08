@@ -1,0 +1,55 @@
+# Shared paper PPO hyperparameters; experiment-specific assets are required.
+defaults:
+  - rlinf_ppo
+  - _self_
+
+hydra:
+  run:
+    dir: .
+  output_subdir: null
+
+pde:
+  enabled: true
+  pool_dir: ???
+  ema_beta: 0.3
+  consolidation_target: 0.5
+  minimum: 0.05
+
+algorithm:
+  update_epoch: 4
+  clip_ratio_high: 0.2
+  clip_ratio_low: 0.2
+  gamma: 0.99
+  gae_lambda: 0.95
+
+actor:
+  model:
+    model_path: ???
+  optim:
+    lr: 5.0e-6
+  global_batch_size: 2048
+
+rollout:
+  model:
+    model_path: ${actor.model.model_path}
+
+env:
+  train:
+    libero_variant: standard
+    filter_task_ids: null
+    auto_reset: false
+    video_cfg:
+      save_video: false
+  eval:
+    libero_variant: ${env.train.libero_variant}
+    filter_task_ids: ${env.train.filter_task_ids}
+    total_num_envs: 2500
+    video_cfg:
+      save_video: false
+
+runner:
+  logger:
+    project_name: PDE
+    experiment_name: libero_pde
+    log_path: ./results
+  val_check_interval: 10

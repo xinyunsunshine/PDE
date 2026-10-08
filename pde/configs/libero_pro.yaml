@@ -1,0 +1,14 @@
+defaults:
+  - libero
+  - _self_
+
+env:
+  train:
+    libero_variant: pro
+    perturbation_suffix: task
+  eval:
+    perturbation_suffix: ${env.train.perturbation_suffix}
+
+runner:
+  logger:
+    experiment_name: libero_pro_pde

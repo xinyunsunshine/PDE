@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=69", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -27,12 +27,15 @@ Issues = "https://github.com/xinyunsunshine/PDE/issues"
 pde = "pde.cli:main"
 
 [project.optional-dependencies]
-integration = ["backoff", "imageio[ffmpeg]", "openai"]
-test = ["pytest", "ruff"]
+integration = ["openai", "Pillow", "hydra-core"]
+test = ["pytest", "ruff", "hydra-core", "torch"]
 
 [tool.setuptools.packages.find]
 include = ["pde*"]
 exclude = ["tests*"]
+
+[tool.setuptools.package-data]
+pde = ["configs/*.yaml", "examples/*.json"]
 
 [tool.ruff]
 line-length = 88

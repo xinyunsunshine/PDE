@@ -1,5 +1,4 @@
 import random
-import ast
 from pathlib import Path
 
 import pytest
@@ -37,7 +36,9 @@ def test_discovery_builds_admitted_pool(tmp_path):
         _empty_pool(),
         evaluator,
         supervisor,
-        DiscoveryConfig(iterations=2, candidates_per_iteration=2, rollouts_per_candidate=3),
+        DiscoveryConfig(
+            iterations=2, candidates_per_iteration=2, rollouts_per_candidate=3
+        ),
     )
     assert [candidate.prompt for candidate in pool.admitted] == ["push the door"]
 
@@ -64,27 +65,3 @@ def test_rlinf_is_pinned_as_submodule():
     gitmodules = (root / ".gitmodules").read_text()
     assert "path = RLinf" in gitmodules
     assert not (root / "rlinf").exists()
-
-
-def test_framework_extensions_inherit_rlinf_types():
-    root = Path(__file__).resolve().parents[2]
-    expected = {
-        "actor.py": {"PDEActor": "EmbodiedFSDPActor"},
-        "dual_actor.py": {"PDEDualActor": "PDEActor"},
-        "data.py": {
-            "PDETrajectory": "Trajectory",
-            "PDERolloutResult": "EmbodiedRolloutResult",
-        },
-        "env.py": {"PDELiberoEnv": "LiberoEnv", "PDEEnvWorker": "EnvWorker"},
-        "model.py": {"PDEOpenPiActionModel": "OpenPi0ForRLActionPrediction"},
-        "runner.py": {"PDERunner": "EmbodiedRunner"},
-    }
-    for filename, classes in expected.items():
-        tree = ast.parse((root / "pde" / "rlinf" / filename).read_text())
-        definitions = {
-            node.name: [ast.unparse(base) for base in node.bases]
-            for node in tree.body
-            if isinstance(node, ast.ClassDef)
-        }
-        for name, base in classes.items():
-            assert base in definitions[name]

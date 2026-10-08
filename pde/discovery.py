@@ -18,11 +18,14 @@ class DiscoveryConfig:
     admission_threshold: float = 0.0
 
     def __post_init__(self) -> None:
-        if min(
-            self.iterations,
-            self.candidates_per_iteration,
-            self.rollouts_per_candidate,
-        ) <= 0:
+        if (
+            min(
+                self.iterations,
+                self.candidates_per_iteration,
+                self.rollouts_per_candidate,
+            )
+            <= 0
+        ):
             raise ValueError("discovery counts must be positive")
         if not 0 <= self.admission_threshold <= 1:
             raise ValueError("admission_threshold must be in [0, 1]")
