@@ -1,0 +1,72 @@
+{
+  "validation_date": "2026-10-08",
+  "environment": {
+    "platform": "Linux GPU cluster (not hosted Colab)",
+    "gpu": "NVIDIA H100 80GB HBM3",
+    "python": "3.11.14",
+    "torch": "2.7.1",
+    "transformers": "4.53.2",
+    "system_packages": "Preinstalled host EGL/GL libraries; Colab apt-get step not exercised"
+  },
+  "checkpoint": {
+    "repo_id": "RLinf/RLinf-Pi05-LIBERO-SFT",
+    "revision": "45ccfcc4e28634f1576ebf78cab0fbe2fd82432d"
+  },
+  "rlinf_revision": "fce5435df9472e2c61957e4f849fb903fc70827c",
+  "openpi_revision": "c5dc4b9296a1a4739bf52828f28a579f12dce763",
+  "libero_revision": "0c5e40cc4ae63e09c14e7df6f74481e9ee8585f7",
+  "task": "libero_90.close_the_microwave",
+  "task_index": 33,
+  "seed": 0,
+  "trial": 0,
+  "steps_per_rollout": 240,
+  "comparisons": [
+    {
+      "prompt": "close the microwave",
+      "simulator_success": false,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2"
+    },
+    {
+      "prompt": "push the microwave door until it shuts",
+      "simulator_success": false,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2"
+    },
+    {
+      "prompt": "close the microwave door properly",
+      "simulator_success": false,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2"
+    }
+  ],
+  "video": {
+    "frames_per_rollout": 241,
+    "fps": 20
+  },
+  "vlm": {
+    "provider": "local_qwen",
+    "model": "Qwen/Qwen3-VL-2B-Instruct",
+    "summary": "The robot attempted to close the microwave by placing a mug inside it, but failed to do so as it was not properly aligned and the microwave door did not close correctly.",
+    "new_prompts": [
+      "close the microwave door properly",
+      "ensure the microwave door is fully closed",
+      "close the microwave without a mug inside"
+    ],
+    "simulator_success": false
+  },
+  "replay_measurements": {
+    "elapsed_seconds": 76.0,
+    "peak_cuda_reserved_gib": 7.26
+  },
+  "checks": {
+    "pytest_passed": 24,
+    "notebook_schema_and_syntax": "passed",
+    "video_display_cell": "executed with generated MP4 files",
+    "python_environment_installation": "passed after fixes"
+  },
+  "not_exercised": [
+    "Google-hosted Colab runtime and browser UI",
+    "Colab apt-get system-package installation",
+    "Live OpenAI API (no credentials available)"
+  ],
+  "vlm_serving": "Transformers 4.57.6 in a separate process with an OpenAI-compatible HTTP adapter",
+  "vlm_revision": "89644892e4d85e24eaac8bacfd4f463576704203"
+}

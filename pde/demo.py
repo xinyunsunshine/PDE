@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 import random
+import time
 from pathlib import Path
 
 
@@ -76,12 +77,43 @@ def run_episode(env, model, model_cfg, prompt, seed, steps, video_path):
     }
 
 
+def compare_prompts(
+    env_factory, model, model_cfg, reference, prompt, seed, steps, output
+):
+    results = []
+    for name, prompt in [("reference", reference), ("custom", prompt)]:
+        # Recreate the simulator so controller state from the previous rollout
+        # cannot survive a physics-state reset. Keep the same loaded policy.
+        env = env_factory()
+        try:
+            print(f"Running {name}: {prompt}", flush=True)
+            results.append(
+                run_episode(
+                    env,
+                    model,
+                    model_cfg,
+                    prompt,
+                    seed,
+                    steps,
+                    output / f"{name}.mp4",
+                )
+            )
+        finally:
+            env.env.close()
+    if results[0]["initial_image_sha256"] != results[1]["initial_image_sha256"]:
+        raise RuntimeError("Initial observations differ; comparison is not matched")
+    return results
+
+
 def compare(args):
     # Set before simulator/model imports. JAX performs preprocessing on CPU.
     os.environ["LIBERO_TYPE"] = "standard"
     os.environ.setdefault("MUJOCO_GL", "egl")
     os.environ.setdefault("PYOPENGL_PLATFORM", "egl")
     os.environ.setdefault("JAX_PLATFORMS", "cpu")
+    config_dir = Path(args.output).resolve() / "libero-config"
+    os.environ.setdefault("LIBERO_CONFIG_PATH", str(config_dir))
+    Path(os.environ["LIBERO_CONFIG_PATH"]).mkdir(parents=True, exist_ok=True)
     import torch
     from hydra import compose, initialize_config_dir
     from omegaconf import open_dict
@@ -123,40 +155,35 @@ def compare(args):
         cfg.env.train.max_steps_per_rollout_epoch = args.steps
     output = Path(args.output).resolve()
     output.mkdir(parents=True, exist_ok=True)
-    env = PDELiberoEnv(cfg.env.train, 1, 0, 1, None)
-    try:
-        print("Loading one frozen pi0.5 policy...", flush=True)
-        model = get_model(cfg.actor.model).eval().requires_grad_(False)
-        results = []
-        for name, prompt in [("reference", args.reference), ("custom", args.prompt)]:
-            print(f"Running {name}: {prompt}", flush=True)
-            results.append(
-                run_episode(
-                    env,
-                    model,
-                    cfg.actor.model,
-                    prompt,
-                    args.seed,
-                    args.steps,
-                    output / f"{name}.mp4",
-                )
-            )
-        if results[0]["initial_image_sha256"] != results[1]["initial_image_sha256"]:
-            raise RuntimeError("Initial observations differ; comparison is not matched")
-        report = {
-            "checkpoint": args.checkpoint,
-            "task_index": task_index,
-            "trial": args.trial,
-            "rlinf_revision": "fce5435df9472e2c61957e4f849fb903fc70827c",
-            "results": results,
-        }
-        source = Path(args.checkpoint) / "demo_source.json"
-        if source.exists():
-            report["checkpoint_source"] = json.loads(source.read_text())
-        (output / "comparison.json").write_text(json.dumps(report, indent=2) + "\n")
-        print(json.dumps(report, indent=2))
-    finally:
-        env.env.close()
+    started = time.perf_counter()
+    torch.cuda.reset_peak_memory_stats()
+    print("Loading one frozen pi0.5 policy...", flush=True)
+    model = get_model(cfg.actor.model).eval().requires_grad_(False)
+    results = compare_prompts(
+        lambda: PDELiberoEnv(cfg.env.train, 1, 0, 1, None),
+        model,
+        cfg.actor.model,
+        args.reference,
+        args.prompt,
+        args.seed,
+        args.steps,
+        output,
+    )
+    report = {
+        "checkpoint": args.checkpoint,
+        "gpu_name": torch.cuda.get_device_name(),
+        "peak_cuda_reserved_gib": round(torch.cuda.max_memory_reserved() / 1024**3, 2),
+        "elapsed_seconds": round(time.perf_counter() - started, 1),
+        "task_index": task_index,
+        "trial": args.trial,
+        "rlinf_revision": "fce5435df9472e2c61957e4f849fb903fc70827c",
+        "results": results,
+    }
+    source = Path(args.checkpoint) / "demo_source.json"
+    if source.exists():
+        report["checkpoint_source"] = json.loads(source.read_text())
+    (output / "comparison.json").write_text(json.dumps(report, indent=2) + "\n")
+    print(json.dumps(report, indent=2))
 
 
 def feedback(args):

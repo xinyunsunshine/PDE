@@ -163,3 +163,43 @@ def test_feedback_uses_observed_frames_and_displays_response(
     assert result["new_prompts"] == ["push the door shut"]
     assert "The robot missed the door." in capsys.readouterr().out
     assert closed == [True]
+
+
+def test_each_prompt_gets_a_fresh_simulator_but_the_same_policy(tmp_path, monkeypatch):
+    from pde.demo import compare_prompts
+
+    created, closed, policies = [], [], []
+    policy = object()
+
+    def factory():
+        env = SimpleNamespace(env=SimpleNamespace(close=lambda: closed.append(True)))
+        created.append(env)
+        return env
+
+    def episode(env, model, *args):
+        policies.append(model)
+        assert not hasattr(env, "used"), "Simulator was reused between prompts"
+        env.used = True
+        return {"initial_image_sha256": "identical"}
+
+    monkeypatch.setattr("pde.demo.run_episode", episode)
+    compare_prompts(factory, policy, None, "original", "rewrite", 0, 240, tmp_path)
+    assert len(created) == len(closed) == 2
+    assert policies == [policy, policy]
+
+
+def test_simulator_closed_if_rollout_fails(tmp_path, monkeypatch):
+    from pde.demo import compare_prompts
+
+    closed = []
+    env = SimpleNamespace(env=SimpleNamespace(close=lambda: closed.append(True)))
+
+    def fail(*args):
+        raise RuntimeError("rendering failed")
+
+    monkeypatch.setattr("pde.demo.run_episode", fail)
+    with pytest.raises(RuntimeError, match="rendering failed"):
+        compare_prompts(
+            lambda: env, None, None, "original", "rewrite", 0, 240, tmp_path
+        )
+    assert closed == [True]

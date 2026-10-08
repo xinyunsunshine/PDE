@@ -19,8 +19,9 @@ Change the VLA's instruction, compare two microwave rollouts from the same
 initial state, and ask a VLM to summarize the behavior and suggest prompts.
 The notebook uses one A100/L4 GPU for a frozen pi0.5 policy and an optional
 OpenAI or externally hosted Qwen endpoint for feedback. It defaults to RLinf's
-public checkpoint; outcomes depend on the checkpoint and prompt. A full Colab
-GPU run has not yet been verified.
+public checkpoint; outcomes depend on the checkpoint and prompt. The real
+rollout and Qwen-feedback sequence has been tested on one H100; Google-hosted
+Colab itself remains untested. See the [recorded validation results](notebooks/microwave_validation.json).
 
 ## Install
 
