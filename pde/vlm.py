@@ -12,12 +12,38 @@ from PIL import Image
 class VLMSupervisor:
     """Propose instructions from successful pools and positive/negative history."""
 
-    def __init__(self, model, base_url=None, frames_per_video=8):
-        self.client = OpenAI(
-            base_url=base_url, api_key=os.environ.get("OPENAI_API_KEY", "EMPTY")
-        )
+    def __init__(
+        self,
+        model=None,
+        base_url=None,
+        frames_per_video=8,
+        *,
+        provider="local_qwen",
+        temperature=0.8,
+    ):
+        if provider == "openai":
+            if base_url and base_url.rstrip("/") != "https://api.openai.com/v1":
+                raise ValueError("Use provider=local_qwen for a custom endpoint")
+            api_key = os.environ.get("OPENAI_API_KEY")
+            if not api_key:
+                raise ValueError("Set OPENAI_API_KEY for provider=openai")
+            endpoint = "https://api.openai.com/v1"
+            model = model or "gpt-4.1"
+        elif provider == "local_qwen":
+            endpoint = (
+                base_url
+                or os.environ.get("QWEN_BASE_URL")
+                or "http://127.0.0.1:8000/v1"
+            )
+            api_key = os.environ.get("QWEN_API_KEY") or "EMPTY"
+            model = model or "Qwen/Qwen3-VL-235B-A22B-Thinking-FP8"
+        else:
+            raise ValueError("provider must be openai or local_qwen")
+        self.client = OpenAI(base_url=endpoint, api_key=api_key)
+        self.provider = provider
         self.model = model
         self.frames_per_video = frames_per_video
+        self.temperature = temperature
 
     def _request(self, content):
         response = self.client.chat.completions.create(
@@ -30,7 +56,11 @@ class VLMSupervisor:
                 },
                 {"role": "user", "content": content},
             ],
-            temperature=0.8,
+            **(
+                {"temperature": self.temperature}
+                if self.temperature is not None
+                else {}
+            ),
         )
         text = response.choices[0].message.content
         if not text:

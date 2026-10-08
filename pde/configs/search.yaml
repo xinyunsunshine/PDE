@@ -6,8 +6,10 @@ search:
   task_index: ???
   task_id: ???
   output: ???
-  vlm_model: Qwen/Qwen3-VL-235B-A22B-Thinking-FP8
-  base_url: ${oc.env:OPENAI_BASE_URL,null}
+  provider: local_qwen # openai or local_qwen (OpenAI-compatible server)
+  vlm_model: null # provider default; override with the server model ID
+  base_url: null # local_qwen: QWEN_BASE_URL or http://127.0.0.1:8000/v1
+  temperature: 0.8 # set null for models that do not accept temperature
   frames_per_video: 8
   budget:
     iterations: 10

@@ -28,7 +28,7 @@ pde = "pde.cli:main"
 
 [project.optional-dependencies]
 integration = ["openai", "Pillow", "hydra-core"]
-test = ["pytest", "ruff", "hydra-core", "torch"]
+test = ["pytest", "ruff", "hydra-core", "torch", "openai", "Pillow", "numpy", "httpx"]
 
 [tool.setuptools.packages.find]
 include = ["pde*"]

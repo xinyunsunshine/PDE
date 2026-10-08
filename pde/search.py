@@ -28,6 +28,13 @@ def main(cfg):
     from rlinf.models import get_model
     from pde.libero import PDELiberoEnv
 
+    supervisor = VLMSupervisor(
+        cfg.search.vlm_model,
+        cfg.search.base_url,
+        cfg.search.frames_per_video,
+        provider=cfg.search.provider,
+        temperature=cfg.search.temperature,
+    )
     settings = DiscoveryConfig(**OmegaConf.to_container(cfg.search.budget))
     env_cfg = copy.deepcopy(cfg.env.train)
     with open_dict(env_cfg):
@@ -47,9 +54,6 @@ def main(cfg):
         model = get_model(cfg.actor.model)
         model.eval()
         model.requires_grad_(False)
-        supervisor = VLMSupervisor(
-            cfg.search.vlm_model, cfg.search.base_url, cfg.search.frames_per_video
-        )
         obs, _ = env.reset()
         originals = set(obs["task_descriptions"])
         if len(originals) != 1:
@@ -65,7 +69,9 @@ def main(cfg):
             metadata={
                 "task_index": cfg.search.task_index,
                 "seed": env_cfg.seed,
-                "vlm_model": cfg.search.vlm_model,
+                "vlm_model": supervisor.model,
+                "vlm_provider": supervisor.provider,
+                "vlm_temperature": supervisor.temperature,
                 "rlinf_revision": "fce5435df9472e2c61957e4f849fb903fc70827c",
             },
         )

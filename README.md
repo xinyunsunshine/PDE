@@ -35,17 +35,57 @@ and pool directory.
 
 ## 1. Discover prompts with a VLM
 
-Run discovery once per task, with fixed policy weights. For example, for task 0
-of the configured LIBERO-object suite:
+Run discovery once per task, with fixed policy weights. Both providers use the
+same video summaries, proposal loop and prompt-pool format.
+
+**OpenAI API** (requires `OPENAI_API_KEY`):
 
 ```bash
 export OPENAI_API_KEY=...
-export OPENAI_BASE_URL=https://YOUR_VLM_ENDPOINT/v1
 python -m pde.search \
+  search.provider=openai search.vlm_model=gpt-4.1 \
   actor.model.model_path=/path/to/weak-pi05 \
   search.task_index=0 search.task_id=libero_object.task_0 \
   search.output=prompt_pools/task_0.json
 ```
+
+**Local Qwen-VL**, served through an OpenAI-compatible server such as vLLM.
+In a separate serving environment with sufficient GPU memory, for example:
+
+```bash
+vllm serve Qwen/Qwen3-VL-8B-Instruct \
+  --host 127.0.0.1 --port 8000 \
+  --limit-mm-per-prompt '{"image":80}'
+```
+
+Then launch discovery in the RLinf environment:
+
+```bash
+python -m pde.search \
+  search.provider=local_qwen search.vlm_model=Qwen/Qwen3-VL-8B-Instruct \
+  search.base_url=http://127.0.0.1:8000/v1 \
+  actor.model.model_path=/path/to/weak-pi05 \
+  search.task_index=0 search.task_id=libero_object.task_0 \
+  search.output=prompt_pools/task_0.json
+```
+
+Local serving does not require an OpenAI key. Set `QWEN_API_KEY` only if your
+server requires authentication. `QWEN_BASE_URL` is an alternative to
+`search.base_url`; `OPENAI_BASE_URL` is not used by either provider. The OpenAI
+provider always calls the official endpoint. Match `search.vlm_model` to the
+server's model ID. Local here means a separate inference server, not loading
+Qwen into the simulator process.
+
+The default provider is `local_qwen`; its default model remains
+`Qwen/Qwen3-VL-235B-A22B-Thinking-FP8`. The smaller 8B example and OpenAI option
+are alternative discovery configurations, not equivalent paper experiments.
+The server must accept at least `rollouts_per_candidate * frames_per_video`
+images per request (80 with the defaults), with enough context for those images.
+Set `search.temperature=null` for models that do not accept temperature.
+Provider, resolved model ID and temperature are recorded in each pool.
+See the [OpenAI vision guide](https://developers.openai.com/api/docs/guides/images-vision)
+and [Qwen serving instructions](https://github.com/QwenLM/Qwen3-VL#deployment)
+for API and server setup.
 
 The command evaluates the canonical instruction, then performs up to ten rounds
 of five proposals with ten rollouts per candidate. The VLM summarizes videos;
