@@ -124,18 +124,6 @@ ratio = exp(logp - old_logp_under_sampled_prompt)
 Both current-policy terms receive gradients. Rewards and the stored old
 likelihood remain those of the original rollout.
 
-## Tests
-
-```bash
-python -m pip install -e ".[test]"
-pytest -q
-ruff check pde tests
-python scripts/release_audit.py .
-```
-
-Runtime tests use the installed RLinf training dependencies. Core artifact,
-objective and config tests run on CPU; no model download or VLM call is needed.
-
 ## Citation
 
 ```bibtex
