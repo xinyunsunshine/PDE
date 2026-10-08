@@ -21,6 +21,7 @@ TEXT_SUFFIXES = {
     ".cfg",
     ".cff",
     ".ini",
+    ".ipynb",
     ".json",
     ".md",
     ".py",

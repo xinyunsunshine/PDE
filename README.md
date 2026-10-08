@@ -11,6 +11,17 @@ The method lives in `pde/`: `PDEActor` is our PPO actor, inheriting RLinf's
 `EmbodiedFSDPActor`. The unmodified `RLinf/` submodule supplies distributed
 execution, policy loading, simulation, PPO and optimization.
 
+## Interactive microwave demo
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/xinyunsunshine/PDE/blob/main/notebooks/microwave_prompt_demo.ipynb)
+
+Change the VLA's instruction, compare two microwave rollouts from the same
+initial state, and ask a VLM to summarize the behavior and suggest prompts.
+The notebook uses one A100/L4 GPU for a frozen pi0.5 policy and an optional
+OpenAI or externally hosted Qwen endpoint for feedback. It defaults to RLinf's
+public checkpoint; outcomes depend on the checkpoint and prompt. A full Colab
+GPU run has not yet been verified.
+
 ## Install
 
 Use Python 3.10 or 3.11 and clone the pinned dependency:
