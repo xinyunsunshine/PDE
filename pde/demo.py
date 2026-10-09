@@ -1,4 +1,4 @@
-"""Single-GPU microwave comparison and optional VLM feedback for Colab."""
+"""Single-GPU microwave comparison and optional VLM feedback for Jupyter."""
 
 import argparse
 import hashlib
@@ -22,7 +22,9 @@ def find_microwave_task(suite):
     return matches[0]
 
 
-def run_episode(env, model, model_cfg, prompt, seed, steps, video_path):
+def run_episode(
+    env, model, model_cfg, prompt, seed, steps, video_path, sampling_mode="eval"
+):
     import imageio.v2 as imageio
     import numpy as np
     import torch
@@ -45,7 +47,9 @@ def run_episode(env, model, model_cfg, prompt, seed, steps, video_path):
             inputs = dict(observations, task_descriptions=[prompt])
             inputs.setdefault("extra_view_images", None)
             with torch.inference_mode():
-                actions, _ = model.predict_action_batch(env_obs=inputs, mode="eval")
+                actions, _ = model.predict_action_batch(
+                    env_obs=inputs, mode=sampling_mode
+                )
             actions = prepare_actions(
                 raw_chunk_actions=actions,
                 env_type="libero",
@@ -71,6 +75,7 @@ def run_episode(env, model, model_cfg, prompt, seed, steps, video_path):
         "success": success,
         "seed": seed,
         "steps": steps,
+        "sampling_mode": sampling_mode,
         "initial_image_sha256": initial_hash,
         "video": video_path.name,
         "frames": video_path.with_suffix(".npz").name,
@@ -78,7 +83,15 @@ def run_episode(env, model, model_cfg, prompt, seed, steps, video_path):
 
 
 def compare_prompts(
-    env_factory, model, model_cfg, reference, prompt, seed, steps, output
+    env_factory,
+    model,
+    model_cfg,
+    reference,
+    prompt,
+    seed,
+    steps,
+    output,
+    sampling_mode="eval",
 ):
     results = []
     for name, prompt in [("reference", reference), ("custom", prompt)]:
@@ -96,6 +109,7 @@ def compare_prompts(
                     seed,
                     steps,
                     output / f"{name}.mp4",
+                    sampling_mode,
                 )
             )
         finally:
@@ -124,7 +138,7 @@ def compare(args):
     verify_rlinf(root)
     if not torch.cuda.is_available() or torch.cuda.get_device_capability()[0] < 8:
         raise RuntimeError(
-            "Select an Ampere-or-newer Colab GPU (e.g. A100 or L4) for BF16 pi0.5"
+            "Select an Ampere-or-newer GPU (e.g. A100, L4 or H100) for BF16 pi0.5"
         )
     if args.steps < 10 or args.steps % 10:
         raise ValueError("steps must be a positive multiple of 10")
@@ -168,6 +182,7 @@ def compare(args):
         args.seed,
         args.steps,
         output,
+        getattr(args, "sampling_mode", "eval"),
     )
     report = {
         "checkpoint": args.checkpoint,
@@ -183,7 +198,52 @@ def compare(args):
     if source.exists():
         report["checkpoint_source"] = json.loads(source.read_text())
     (output / "comparison.json").write_text(json.dumps(report, indent=2) + "\n")
+    render_comparison_preview(output)
     print(json.dumps(report, indent=2))
+
+
+def render_comparison_preview(directory):
+    """Save an animated simulator preview that also renders in GitHub notebooks."""
+    import textwrap
+
+    import imageio.v2 as imageio
+    from PIL import Image, ImageDraw
+
+    directory = Path(directory)
+    report = json.loads((directory / "comparison.json").read_text())
+    results = report["results"]
+    readers = [imageio.get_reader(directory / r["video"]) for r in results]
+    captions = [textwrap.wrap(r["prompt"], width=36) for r in results]
+    header = max(64, 14 * max(map(len, captions)) + 24)
+    previews = []
+    try:
+        for index, frames in enumerate(zip(*readers)):
+            if index % 4:
+                continue
+            canvas = Image.new("RGB", (256 * len(results), header + 256), "white")
+            draw = ImageDraw.Draw(canvas)
+            for j, (frame, result) in enumerate(zip(frames, results)):
+                caption = "\n".join(captions[j])
+                draw.text((256 * j + 5, 3), caption, fill="black")
+                draw.text(
+                    (256 * j + 5, header - 17),
+                    f"Simulator success: {result['success']}",
+                    fill="black",
+                )
+                canvas.paste(
+                    Image.fromarray(frame).resize((256, 256)), (256 * j, header)
+                )
+            previews.append(canvas.quantize(colors=64))
+    finally:
+        for reader in readers:
+            reader.close()
+    if not previews:
+        raise ValueError("Rollout videos contain no frames")
+    destination = directory / "comparison.gif"
+    previews[0].save(
+        destination, save_all=True, append_images=previews[1:], duration=200, loop=0
+    )
+    return destination
 
 
 def feedback(args):
@@ -242,6 +302,12 @@ def main():
     rollout.add_argument("--seed", type=int, default=0)
     rollout.add_argument("--trial", type=int, default=0)
     rollout.add_argument("--steps", type=int, default=240)
+    rollout.add_argument(
+        "--sampling-mode",
+        choices=["eval", "train"],
+        default="eval",
+        help="eval: ODE inference; train: PDE exploration noise, with weights frozen",
+    )
     rollout.add_argument("--output", required=True)
     rollout.set_defaults(func=compare)
     vlm = commands.add_parser("feedback")

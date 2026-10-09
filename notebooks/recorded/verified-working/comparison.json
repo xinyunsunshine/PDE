@@ -1,0 +1,37 @@
+{
+  "checkpoint": "RLinf/RLinf-Pi05-LIBERO-SFT",
+  "gpu_name": "NVIDIA H100 80GB HBM3",
+  "peak_cuda_reserved_gib": 7.26,
+  "elapsed_seconds": 96.6,
+  "task_index": 33,
+  "trial": 1,
+  "rlinf_revision": "fce5435df9472e2c61957e4f849fb903fc70827c",
+  "results": [
+    {
+      "prompt": "close the microwave",
+      "canonical_prompt": "close the microwave",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "sampling_mode": "train",
+      "initial_image_sha256": "232f520cb6a29772bf66332fc3b0626b8024e91176b4773db4f036d153bf1e8e",
+      "video": "reference.mp4",
+      "frames": "reference.npz"
+    },
+    {
+      "prompt": "push on the microwave door until it shuts",
+      "canonical_prompt": "close the microwave",
+      "success": true,
+      "seed": 0,
+      "steps": 480,
+      "sampling_mode": "train",
+      "initial_image_sha256": "232f520cb6a29772bf66332fc3b0626b8024e91176b4773db4f036d153bf1e8e",
+      "video": "custom.mp4",
+      "frames": "custom.npz"
+    }
+  ],
+  "checkpoint_source": {
+    "repo_id": "RLinf/RLinf-Pi05-LIBERO-SFT",
+    "revision": "45ccfcc4e28634f1576ebf78cab0fbe2fd82432d"
+  }
+}

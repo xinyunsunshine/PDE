@@ -34,6 +34,13 @@ creates a separate Python 3.11 environment and leaves your Jupyter kernel intact
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/xinyunsunshine/PDE/blob/main/notebooks/microwave_prompt_demo.ipynb)
 
+The notebook includes animated simulator rollouts that display on GitHub.
+Two prompts passed and were independently rerun with the public checkpoint:
+**“push on the microwave door until it shuts”** and **“shut the open appliance door.”**
+Use the saved settings: **trial 1, seed 0, 480 steps, exploration sampling**.
+The original prompt failed in both matched comparisons. These are selected
+examples; success depends on the initial state and sampling settings.
+
 Change the VLA's instruction, compare two microwave rollouts from the same
 initial state, and ask a VLM to summarize the behavior and suggest prompts.
 The notebook uses one A100/L4 GPU for a frozen pi0.5 policy and an optional

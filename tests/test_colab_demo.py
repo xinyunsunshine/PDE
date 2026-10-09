@@ -43,7 +43,10 @@ def test_microwave_lookup_uses_language_not_hardcoded_index():
         find_microwave_task(suite)
 
 
-def test_comparison_resets_noise_and_keeps_original_goal(tmp_path, monkeypatch):
+@pytest.mark.parametrize("sampling_mode", ["eval", "train"])
+def test_comparison_resets_noise_and_keeps_original_goal(
+    tmp_path, monkeypatch, sampling_mode
+):
     # RLinf core imports require its optional runtime dependencies.
     pytest.importorskip("ray")
     from rlinf.envs import action_utils
@@ -90,7 +93,7 @@ def test_comparison_resets_noise_and_keeps_original_goal(tmp_path, monkeypatch):
 
     class Model:
         def predict_action_batch(self, env_obs, mode):
-            assert mode == "eval"
+            assert mode == sampling_mode
             assert not torch.is_grad_enabled()
             prompts.append(env_obs["task_descriptions"][0])
             noise.append(torch.randn(3))
@@ -98,10 +101,24 @@ def test_comparison_resets_noise_and_keeps_original_goal(tmp_path, monkeypatch):
 
     cfg = SimpleNamespace(num_action_chunks=10, action_dim=7, get=lambda key: None)
     first = run_episode(
-        Env(), Model(), cfg, "close the microwave", 7, 20, tmp_path / "first.mp4"
+        Env(),
+        Model(),
+        cfg,
+        "close the microwave",
+        7,
+        20,
+        tmp_path / "first.mp4",
+        sampling_mode,
     )
     second = run_episode(
-        Env(), Model(), cfg, "push the door", 7, 20, tmp_path / "second.mp4"
+        Env(),
+        Model(),
+        cfg,
+        "push the door",
+        7,
+        20,
+        tmp_path / "second.mp4",
+        sampling_mode,
     )
     assert first["initial_image_sha256"] == second["initial_image_sha256"]
     assert (
@@ -208,3 +225,76 @@ def test_simulator_closed_if_rollout_fails(tmp_path, monkeypatch):
             lambda: env, None, None, "original", "rewrite", 0, 240, tmp_path
         )
     assert closed == [True]
+
+
+def test_animated_preview_keeps_both_prompts_and_all_sampled_times(
+    tmp_path, monkeypatch
+):
+    from PIL import Image
+    import imageio.v2 as imageio
+    from pde.demo import render_comparison_preview
+
+    (tmp_path / "comparison.json").write_text(
+        json.dumps(
+            {
+                "results": [
+                    {
+                        "prompt": "close the microwave",
+                        "success": False,
+                        "video": "a.mp4",
+                    },
+                    {"prompt": "shut the door", "success": True, "video": "b.mp4"},
+                ]
+            }
+        )
+    )
+    closed = []
+
+    class Reader:
+        def __iter__(self):
+            return iter(
+                [np.full((16, 16, 3), i * 25, dtype=np.uint8) for i in range(9)]
+            )
+
+        def close(self):
+            closed.append(True)
+
+    monkeypatch.setattr(imageio, "get_reader", lambda path: Reader())
+    output = render_comparison_preview(tmp_path)
+    with Image.open(output) as preview:
+        assert preview.size == (512, 320)
+        assert preview.n_frames == 3
+        assert preview.info["duration"] == 200
+        assert preview.info["loop"] == 0
+    assert len(closed) == 2
+
+
+def test_notebook_defaults_match_verified_successful_comparison(tmp_path):
+    root = Path(__file__).parents[1]
+    notebook = json.loads((root / "notebooks/microwave_prompt_demo.ipynb").read_text())
+    source = next(
+        "".join(c["source"])
+        for c in notebook["cells"]
+        if c["cell_type"] == "code" and "custom_prompt = " in "".join(c["source"])
+    )
+    calls = []
+    scope = {
+        "WORKSPACE": tmp_path,
+        "CHECKPOINT": "frozen-checkpoint",
+        "run_demo": lambda *args: calls.append(args),
+    }
+    exec(compile(source, "notebook-comparison", "exec"), scope)
+    for index, directory in enumerate(
+        ["verified-working", "verified-working-appliance"]
+    ):
+        report = json.loads(
+            (root / "notebooks/recorded" / directory / "comparison.json").read_text()
+        )
+        reference, custom = report["results"]
+        assert custom["success"] and not reference["success"]
+        assert reference["initial_image_sha256"] == custom["initial_image_sha256"]
+        assert scope["working_prompts"][index] == custom["prompt"]
+        assert scope["trial"] == report["trial"]
+        for key in ["seed", "steps", "sampling_mode"]:
+            assert scope[key] == custom[key] == reference[key]
+    assert calls[0][calls[0].index("--sampling-mode") + 1] == "train"

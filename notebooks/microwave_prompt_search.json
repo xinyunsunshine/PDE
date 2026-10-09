@@ -1,0 +1,570 @@
+{
+  "validation_date": "2026-10-08",
+  "checkpoint": {
+    "repo_id": "RLinf/RLinf-Pi05-LIBERO-SFT",
+    "revision": "45ccfcc4e28634f1576ebf78cab0fbe2fd82432d"
+  },
+  "rlinf_revision": "fce5435df9472e2c61957e4f849fb903fc70827c",
+  "task": "libero_90.close_the_microwave",
+  "task_index": 33,
+  "protocol": "Adaptive prompt search with frozen weights; each rollout uses a fresh simulator. Rows include all completed attempts, including failures. This is a search record, not a success-rate estimate.",
+  "sampling_modes": {
+    "eval": "ODE inference",
+    "train": "PDE exploration sampling (flow-SDE); weights remain frozen"
+  },
+  "seed_note": "seed is the policy inference seed; environment_seed is recorded separately. trial selects the benchmark initial state.",
+  "completed_rollouts": 55,
+  "successful_rollouts": 2,
+  "results": [
+    {
+      "prompt": "close the microwave",
+      "success": false,
+      "seed": 0,
+      "steps": 400,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "close the microwave door",
+      "success": false,
+      "seed": 0,
+      "steps": 400,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "push the microwave door closed",
+      "success": false,
+      "seed": 0,
+      "steps": 400,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "shut the microwave",
+      "success": false,
+      "seed": 0,
+      "steps": 400,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "close the microwave without touching the mug",
+      "success": false,
+      "seed": 0,
+      "steps": 400,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "push the microwave door until it shuts",
+      "success": false,
+      "seed": 0,
+      "steps": 400,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "move the gripper to the microwave door and push it closed",
+      "success": false,
+      "seed": 0,
+      "steps": 400,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "shut the microwave door with your hand",
+      "success": false,
+      "seed": 0,
+      "steps": 400,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "close the microwave door properly",
+      "success": false,
+      "seed": 0,
+      "steps": 400,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "push the open microwave door to close it",
+      "success": false,
+      "seed": 0,
+      "steps": 400,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "close microwave",
+      "success": false,
+      "seed": 0,
+      "steps": 400,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "Close the microwave.",
+      "success": false,
+      "seed": 0,
+      "steps": 400,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "close the microwave",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "push on the microwave door until it shuts",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "push the microwave door until it clicks",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "swing the microwave door shut",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "close the black appliance door on the left",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "close the kitchen appliance door",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "shut the open appliance door",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "do not close the cabinet \u2013 close microwave",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "first move to the microwave, then close the door",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "close the microwave",
+      "success": false,
+      "seed": 1,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "push on the microwave door until it shuts",
+      "success": false,
+      "seed": 1,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "push the microwave door until it clicks",
+      "success": false,
+      "seed": 1,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "swing the microwave door shut",
+      "success": false,
+      "seed": 1,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "close the black appliance door on the left",
+      "success": false,
+      "seed": 1,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "close the kitchen appliance door",
+      "success": false,
+      "seed": 1,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "shut the open appliance door",
+      "success": false,
+      "seed": 1,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "do not close the cabinet \u2013 close microwave",
+      "success": false,
+      "seed": 1,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "first move to the microwave, then close the door",
+      "success": false,
+      "seed": 1,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "eval",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "close the microwave",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "train",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "push on the microwave door until it shuts",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "train",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "push the microwave door until it clicks",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "train",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "swing the microwave door shut",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "train",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "close the black appliance door on the left",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "train",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "close the kitchen appliance door",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "train",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "shut the open appliance door",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "train",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "do not close the cabinet \u2013 close microwave",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "train",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "first move to the microwave, then close the door",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "train",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "close the microwave",
+      "success": false,
+      "seed": 1,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "train",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "push on the microwave door until it shuts",
+      "success": false,
+      "seed": 1,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "train",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "push the microwave door until it clicks",
+      "success": false,
+      "seed": 1,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "train",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "swing the microwave door shut",
+      "success": false,
+      "seed": 1,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "train",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "close the black appliance door on the left",
+      "success": false,
+      "seed": 1,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "train",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "close the kitchen appliance door",
+      "success": false,
+      "seed": 1,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "train",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "shut the open appliance door",
+      "success": false,
+      "seed": 1,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "train",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "do not close the cabinet \u2013 close microwave",
+      "success": false,
+      "seed": 1,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "train",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "first move to the microwave, then close the door",
+      "success": false,
+      "seed": 1,
+      "steps": 480,
+      "initial_image_sha256": "7d14ef85b57e9206c2db9d06181835a200353cfdf22cb8cb35b355589c5c70d2",
+      "sampling_mode": "train",
+      "trial": 0,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "close the microwave",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "232f520cb6a29772bf66332fc3b0626b8024e91176b4773db4f036d153bf1e8e",
+      "sampling_mode": "train",
+      "trial": 1,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "push on the microwave door until it shuts",
+      "success": true,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "232f520cb6a29772bf66332fc3b0626b8024e91176b4773db4f036d153bf1e8e",
+      "sampling_mode": "train",
+      "trial": 1,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "push the microwave door until it clicks",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "232f520cb6a29772bf66332fc3b0626b8024e91176b4773db4f036d153bf1e8e",
+      "sampling_mode": "train",
+      "trial": 1,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "swing the microwave door shut",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "232f520cb6a29772bf66332fc3b0626b8024e91176b4773db4f036d153bf1e8e",
+      "sampling_mode": "train",
+      "trial": 1,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "close the black appliance door on the left",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "232f520cb6a29772bf66332fc3b0626b8024e91176b4773db4f036d153bf1e8e",
+      "sampling_mode": "train",
+      "trial": 1,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "close the kitchen appliance door",
+      "success": false,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "232f520cb6a29772bf66332fc3b0626b8024e91176b4773db4f036d153bf1e8e",
+      "sampling_mode": "train",
+      "trial": 1,
+      "environment_seed": 0
+    },
+    {
+      "prompt": "shut the open appliance door",
+      "success": true,
+      "seed": 0,
+      "steps": 480,
+      "initial_image_sha256": "232f520cb6a29772bf66332fc3b0626b8024e91176b4773db4f036d153bf1e8e",
+      "sampling_mode": "train",
+      "trial": 1,
+      "environment_seed": 0
+    }
+  ]
+}
