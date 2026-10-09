@@ -13,38 +13,40 @@ execution, policy loading, simulation, PPO and optimization.
 
 ## Interactive microwave demo
 
-Open the [Jupyter notebook with saved rollout videos and VLM output](notebooks/microwave_prompt_demo.ipynb).
-From your PDE checkout, launch it with:
+The [Jupyter walkthrough](notebooks/microwave_prompt_demo.ipynb) introduces PDE
+through a simple task: **close the microwave**. Watch how changing an instruction
+changes a frozen VLA's behavior, inspect a VLM's feedback, and try new prompts
+against the simulator's original task goal. Saved videos and VLM responses can
+be viewed without a GPU or API key.
+
+Two selected wordings succeed where the original instruction fails:
+**“push on the microwave door until it shuts”** and **“shut the open appliance door.”**
+The notebook includes the matched rollouts and settings—**trial 1, seed 0,
+480 steps, exploration sampling**—alongside failed examples that illustrate why
+prompt proposals need simulator evaluation. These demonstrations introduce the
+exploration stage; the discovery and RL commands below implement the full pipeline.
+
+From a PDE checkout, launch the notebook with:
 
 ```bash
 python -m pip install jupyterlab
 jupyter lab notebooks/microwave_prompt_demo.ipynb
 ```
 
-The saved results can be viewed without a GPU. New rollouts require Linux,
-a native-BF16 NVIDIA GPU, 32 GB host RAM recommended, and 40 GB free disk.
-On Ubuntu/Debian, install system libraries before running the setup cell:
+New rollouts require Linux, one native-BF16 NVIDIA GPU (A100, L4 or H100),
+32 GB host RAM recommended, and 40 GB free disk. On Ubuntu/Debian, install
+system libraries before running the setup cell:
 
 ```bash
 sudo apt-get install libegl1 libgl1 libgles2 libglfw3 libosmesa6 ffmpeg git
 ```
 
-Set the notebook's `workspace_directory` for downloads and outputs. The setup
-creates a separate Python 3.11 environment and leaves your Jupyter kernel intact.
-
-The notebook includes animated simulator rollouts that display on GitHub.
-Two prompts passed and were independently rerun with the public checkpoint:
-**“push on the microwave door until it shuts”** and **“shut the open appliance door.”**
-Use the saved settings: **trial 1, seed 0, 480 steps, exploration sampling**.
-The original prompt failed in both matched comparisons. These are selected
-examples; success depends on the initial state and sampling settings.
-
-Change the VLA's instruction, compare two microwave rollouts from the same
-initial state, and ask a VLM to summarize the behavior and suggest prompts.
-The notebook uses one A100, L4 or H100 GPU for a frozen pi0.5 policy and an optional
-OpenAI or externally hosted Qwen endpoint for feedback. It defaults to RLinf's
-public checkpoint; outcomes depend on the checkpoint and prompt. The real
-rollout and Qwen-feedback sequence has been tested on one H100. See the [recorded validation results](notebooks/microwave_validation.json).
+Set `workspace_directory` in the notebook for downloads and outputs. Setup
+creates a separate Python 3.11 inference environment. The example uses
+[RLinf's public pi0.5 LIBERO SFT checkpoint](https://huggingface.co/RLinf/RLinf-Pi05-LIBERO-SFT)
+and supports OpenAI or a separately hosted Qwen endpoint for VLM feedback.
+See the notebook's final section to continue with iterative prompt discovery
+and PPO training.
 
 ## Install
 
